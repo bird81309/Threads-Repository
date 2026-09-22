@@ -1,0 +1,6 @@
+{
+  "name": "Threads 網址轉換器",
+  "description": "自動還原 Threads 短網址並移除追蹤代碼，一鍵自動複製純淨貼文連結",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

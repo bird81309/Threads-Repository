@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Threads 網址轉換器</title>
+    <meta name="description" content="自動還原 Threads 短網址並移除追蹤代碼，一鍵自動複製純淨貼文連結" />
+    <meta property="og:title" content="Threads 網址轉換器" />
+    <meta property="og:description" content="自動還原 Threads 短網址並移除追蹤代碼，一鍵自動複製純淨貼文連結" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#101010" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Threads轉換" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  </head>
+  <body class="bg-neutral-950 text-neutral-100 antialiased selection:bg-neutral-800 selection:text-white">
+    <div id="root"></div>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js', { scope: '/' })
+            .then(function(reg) {
+              console.log('PWA ServiceWorker registered with scope:', reg.scope);
+            })
+            .catch(function(err) {
+              console.warn('PWA ServiceWorker registration failed:', err);
+            });
+        });
+      }
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
