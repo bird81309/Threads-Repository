@@ -1,13 +1,35 @@
+// Helper to extract specifically the Threads share or post link from arbitrary shared text
 function extractUrl(input: string): string | null {
   if (!input) return null;
-  const match = input.match(/https?:\/\/[^\s<>"']+/i);
-  return match ? match[0] : null;
+
+  // 1. 優先精準抓取 Threads 分享短網址 (threads.net/share/..., threads.com/share/..., threads.net/t/...)
+  const shareMatch = input.match(/https?:\/\/(www\.)?threads\.(net|com)\/(share|t)\/[a-zA-Z0-9_-]+/i);
+  if (shareMatch) {
+    return shareMatch[0];
+  }
+
+  // 2. 其次抓取 Threads 原始貼文網址 (threads.net/@user/post/...)
+  const postMatch = input.match(/https?:\/\/(www\.)?threads\.(net|com)\/@[^\s<>"'\/]+\/post\/[a-zA-Z0-9_-]+/i);
+  if (postMatch) {
+    return postMatch[0];
+  }
+
+  // 3. 再次抓取任何 Threads 網域連結 (threads.net 或 threads.com)
+  const anyThreadsMatch = input.match(/https?:\/\/(www\.)?threads\.(net|com)[^\s<>"']*/i);
+  if (anyThreadsMatch) {
+    return anyThreadsMatch[0];
+  }
+
+  // 4. 最後退回一般網址比對
+  const fallbackMatch = input.match(/https?:\/\/[^\s<>"']+/i);
+  return fallbackMatch ? fallbackMatch[0] : null;
 }
 
+// Function to resolve short URL and strip tracking params
 async function resolveAndCleanThreadsUrl(rawInput: string) {
   const extracted = extractUrl(rawInput);
   if (!extracted) {
-    throw new Error('未在輸入內容中找到有效的網址');
+    throw new Error('未在輸入內容中找到有效的 Threads 網址');
   }
 
   let currentUrl = extracted;
@@ -67,10 +89,10 @@ async function resolveAndCleanThreadsUrl(rawInput: string) {
   let username: string | null = null;
   let postId: string | null = null;
 
-  const postMatch = cleanPath.match(/\/@([^\/]+)\/post\/([^\/]+)/);
-  if (postMatch) {
-    username = postMatch[1];
-    postId = postMatch[2];
+  const matchPost = cleanPath.match(/\/@([^\/]+)\/post\/([^\/]+)/);
+  if (matchPost) {
+    username = matchPost[1];
+    postId = matchPost[2];
   } else {
     const userMatch = cleanPath.match(/\/@([^\/]+)/);
     if (userMatch) {
